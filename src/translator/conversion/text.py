@@ -11,7 +11,7 @@ def convert_glossed_sentences_to_UD_sentences(glossed_sentences: list[GlossedSen
     return UD_sentences
 
 def conllu_to_file(text: list[UDSentence], name_of_file: str) -> None:
-  with open(name_of_file[:-4] + "_conllu.txt", "w", encoding="utf8") as fout:
+  with open(name_of_file, "w", encoding="utf8") as fout:
     for sentence in text:
         sentence.print_as_conllu(fout)
 
@@ -25,5 +25,5 @@ def conllu_to_json(UD_sentences: list[UDSentence], name_of_file: str, source: st
     dict_for_sent = sentence.to_dict(source, url)
     final_list.append(dict_for_sent)
 
-  with open(name_of_file[:-4] + ".json", "w") as out_file:
+  with open(name_of_file, "w") as out_file:
     json.dump(final_list, out_file, indent = 6, ensure_ascii = False)
