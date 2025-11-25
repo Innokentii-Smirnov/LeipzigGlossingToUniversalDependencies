@@ -1,9 +1,7 @@
 from dataclasses import dataclass
-from ... import MORPHOSYNTACTIC_PROPERTY_SEPARATOR
+from ... import EMPTY_FIELD_MARKER, MORPHOSYNTACTIC_PROPERTY_SEPARATOR
 from typing import Any
 
-# The standard actually prescribes the underscore and not the dash.
-EMPTY_FIELD_MARKER = "-"
 # Attributes to include in conllu
 WORD_ATTRS = ['word_id', 'form', 'lemma', 'upos', 'xpos', 'feats', 'head', 'deprel', 'deps', 'translation']
 
