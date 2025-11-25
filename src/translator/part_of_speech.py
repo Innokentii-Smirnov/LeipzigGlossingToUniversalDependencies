@@ -1,13 +1,12 @@
 from .atr_val import adjectives as language_has_adjectives
 
-#import stanza
-#stanza_model = stanza.Pipeline('ru', processors='tokenize,pos,lemma,depparse')
+import stanza
+stanza_model = stanza.Pipeline('ru', processors='tokenize,pos,lemma,depparse')
 
 memory = dict[str, list[str]]()
 
 def define_pos_tag(lemma: str) -> list[str]:
-  return ['VERB']
-  """
+
   if lemma in memory:
     return memory[lemma]
 
@@ -28,4 +27,3 @@ def define_pos_tag(lemma: str) -> list[str]:
     upos_tag1 = ["VERB"]
   memory[lemma] = upos_tag1
   return upos_tag1
-  """
