@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from ..raw.sentence import RawSentence
 from .word import GlossedWord
+from typing import Iterator
 from ..ud.sentence import UDSentence
 from ..ud.word import UDWord
 from contextvars import ContextVar
@@ -16,10 +17,10 @@ class GlossedSentence:
     raw: RawSentence
     words: list[GlossedWord]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '\n'.join([str(self.raw)] + [str(word) for word in self.words])
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[GlossedWord]:
         return self.words.__iter__()
 
     def to_UD_sentence(self) -> UDSentence:

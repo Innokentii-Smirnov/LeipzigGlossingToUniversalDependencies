@@ -1,8 +1,11 @@
 from dataclasses import dataclass
+from .auxiliary import is_lat, is_cyr, preprocess_token
 from ..ud.word import UDWord
 from ...conversion.lemma_detection import lemmas_gram
+from ...part_of_speech import define_pos_tag
 from ...conversion.properties import get_feats
 from ... import EMPTY_FIELD_MARKER, MORPHOSYNTACTIC_PROPERTY_SEPARATOR
+from ...atr_val import prefixes as language_has_prefixes
 from warnings import warn
 from logging import getLogger
 logger = getLogger(__name__)
@@ -12,7 +15,7 @@ class GlossedWord:
     segmentation: str
     gloss: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '{0:25} {1}'.format(self.segmentation, self.gloss)
 
     @property
@@ -41,7 +44,7 @@ class GlossedWord:
         upos_tag = define_pos_tag(lem1[1]) if len(lem1) > 0 else ["None"]
         feats, upos = get_feats(gram1, upos_tag)
         translation = lem1[1] if len(lem1) > 0 else 'None'
-        if not has_prefixes and self.has_proclitic:
+        if not language_has_prefixes and self.has_proclitic:
             clitic_form, segmented_word_form = segmentation.split("-", 1)
             clitic_lemma = clitic_form
             clitic_upos = "PART"

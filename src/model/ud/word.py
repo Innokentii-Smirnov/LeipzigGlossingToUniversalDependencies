@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from ... import EMPTY_FIELD_MARKER, MORPHOSYNTACTIC_PROPERTY_SEPARATOR
-from typing import Any
+from typing import Any, Optional
+from io import TextIOBase
 
 # Attributes to include in conllu
 WORD_ATTRS = ['word_id', 'form', 'lemma', 'upos', 'xpos', 'feats', 'head', 'deprel', 'deps', 'translation']
@@ -18,12 +19,12 @@ class UDWord:
     deprel: str = EMPTY_FIELD_MARKER
     deps: str = EMPTY_FIELD_MARKER
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '{0:10} {1:10} {2:10} {3:10} {4}'.format(
             self.form, self.lemma, self.upos, self.translation, self.feats
         )
 
-    def print_as_conllu(self, file=None):
+    def print_as_conllu(self, file: Optional[TextIOBase] = None) -> None:
         values = [getattr(self, attr) for attr in WORD_ATTRS]
         line = "\t".join(values)
         print(line, file=file)

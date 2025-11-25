@@ -61,7 +61,7 @@ def format_layered_feature(feat: str, layer: str, val: str) -> str:
   """
   return '{0}[{1}]={2}'.format(feat, layer, val)
 
-def format_feature(feat_val: str, part_of_speech: str, bundles: list[list[str]], position: int):
+def format_feature(feat_val: str, part_of_speech: str, bundles: list[list[str]], position: int) -> str:
   """Determine if the feature is layered and provide a string
   representation of the form Feature=Value or Feature[layer]=Value
   for a given feature and value occuring in a bundle of features

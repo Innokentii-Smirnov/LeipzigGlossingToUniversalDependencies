@@ -1,3 +1,4 @@
+from ...atr_val import defaults
 from .auxiliary import split_feat_val
 
 def meets_conditions(morphs: list[str], conditions: list[str]) -> bool:
@@ -19,7 +20,7 @@ def meets_conditions(morphs: list[str], conditions: list[str]) -> bool:
         return False
   return True
 
-def add_defaults(part_of_speech: str, morphs: list[str]):
+def add_defaults(part_of_speech: str, morphs: list[str]) -> list[str]:
   """Add default values for morphological features
   which are missing from a given list of Universal Dependencies
   morphological features but required for the given part of speech.
@@ -32,13 +33,13 @@ def add_defaults(part_of_speech: str, morphs: list[str]):
   """
   if part_of_speech in defaults:
     for default in defaults[part_of_speech]:
-      match default:
-        case (conditions, default_pair):
-          if not meets_conditions(morphs, conditions):
-            continue
-        case default_pair:
-          pass
-      feature, value = split_feat_val(default_pair)
+      if isinstance(default, tuple):
+        conditions, default_feat_val = default
+        if not meets_conditions(morphs, conditions):
+          continue
+      else:
+        default_feat_val = default
+      feature, value = split_feat_val(default_feat_val)
       if not any(feature == split_feat_val(feature_value_pair)[0] for feature_value_pair in morphs):
-        morphs.append(default_pair)
+        morphs.append(default_feat_val)
   return morphs

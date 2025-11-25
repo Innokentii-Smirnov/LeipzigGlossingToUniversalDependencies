@@ -1,19 +1,21 @@
-def lemmas_gram(token1, token2):
+import re
+
+def lemmas_gram(segmentation: str, gloss: str) -> tuple[list[str], list[str]]:
 
     # Функция принимает на вход нивхскую словоформу и соответствующую ей глоссу
     # и возвращает две леммы (нивхскую и русскую) и список грамматических признаков,
     # которые извлекаются из русской глоссы.
 
     #print(token1)
-    if token1 and token2:
-      token1 = token1.strip("?")
-      token1 = token1.split("-")   # разбиваем входные токены по дефисам
-      match1 = re.search(r"\w+-(нибудь|то|либо|таки)|еле-еле|чуть-чуть|едва-едва|кое-\w+", token2)  # Поправить "то"! Сейчас, видимо, отлавливаются слова типа "это-тоже" и др.
+    if segmentation and gloss:
+      segmentation = segmentation.strip("?")
+      token1 = segmentation.split("-")   # разбиваем входные токены по дефисам
+      match1 = re.search(r"\w+-(нибудь|то|либо|таки)|еле-еле|чуть-чуть|едва-едва|кое-\w+", gloss)  # Поправить "то"! Сейчас, видимо, отлавливаются слова типа "это-тоже" и др.
       if match1:
         start = match1.start()
         end = match1.end()
-        token2 = token2[:start] + match1[0].replace("-", "~") + token2[end:]
-      token2 = token2.split("-")
+        gloss = gloss[:start] + gloss[0].replace("-", "~") + gloss[end:]
+      token2 = gloss.split("-")
 
       pair = {}
       #print(token1)
