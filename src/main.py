@@ -1,8 +1,8 @@
 import os
 from os import path
 from tqdm.auto import tqdm
-from .reading.text import read_sentences_from_file
-from .conversion.text import convert_glossed_sentences_to_UD_sentences, conllu_to_file, conllu_to_json
+from translator.reading.text import read_sentences_from_file
+from translator.conversion.text import convert_glossed_sentences_to_UD_sentences, conllu_to_file, conllu_to_json
 
 SOURCE = 'Source unspecified'
 URL = 'Webpage unspecified'
