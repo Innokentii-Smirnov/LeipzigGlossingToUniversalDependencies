@@ -5,12 +5,20 @@ from typing import Iterator
 from ..ud.sentence import UDSentence
 from ..ud.word import UDWord
 from contextvars import ContextVar
+from logging import LogRecord
+
 ctx_sent_id: ContextVar[str] = ContextVar('sent_id')
 ctx_sent_id.set('Unknown line')
 ctx_segmentation: ContextVar[str] = ContextVar('segmentation')
 ctx_segmentation.set('Unknown segmentation')
 ctx_gloss: ContextVar[str] = ContextVar('gloss')
 ctx_gloss.set('Unknown gloss')
+
+def log_filter(record: LogRecord) -> LogRecord:
+  record.sent_id = ctx_sent_id.get()
+  record.segmentation = ctx_segmentation.get()
+  record.gloss = ctx_gloss.get()
+  return record
 
 @dataclass(frozen=True)
 class GlossedSentence:

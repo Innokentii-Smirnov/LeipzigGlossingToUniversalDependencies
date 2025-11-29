@@ -2,5 +2,6 @@ __pycache__
 input
 *output*
 skipped
+logs
 atr_val.py
 diff.txt
