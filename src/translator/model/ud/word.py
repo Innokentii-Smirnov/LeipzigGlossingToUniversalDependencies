@@ -45,7 +45,7 @@ class UDWord:
             'tagsets': [self.tagset],
             'parent_token_index': '-',
             'edge_type': '-',
-            'constituent': {"name": "-", "is_head": "-", "id": "-"},
+            'constituent': {"name": "-", "is_head": False, "id": "-"},
             'translation': self.translation
         }
 
