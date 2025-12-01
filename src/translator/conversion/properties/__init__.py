@@ -39,5 +39,12 @@ def get_feats(properties: list[str], upos: list[str]) -> tuple[list[str], str]:
   # Подстановка дефолтных значений изменяет исходный список и возвращает ссылку на него же.
   feats_with_defaults: list[str] = add_defaults(part_of_speech, feats)
 
-  return feats_with_defaults, part_of_speech
+  # Устранение повторяющихся значений.
+  # Важно: происходит в последнюю очередь, после подстановки psor и под.
+  deduplicated_feats = list[str]()
+  for feat in feats_with_defaults:
+    if feat not in deduplicated_feats:
+      deduplicated_feats.append(feat)
+
+  return deduplicated_feats, part_of_speech
  
