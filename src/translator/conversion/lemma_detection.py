@@ -17,17 +17,17 @@ def lemmas_gram(segmentation: str, gloss: str) -> tuple[list[str], list[str]]:
         gloss = gloss[:start] + gloss[0].replace("-", "~") + gloss[end:]
       token2 = gloss.split("-")
 
-      pair = {}
+      pairs = list[tuple[str, str]]()
       #print(token1)
       for index in range(0, len(token2)):
         key = token1[index]
         value = token2[index]
-        pair[key] = value   # складываем соотнесенные морфемы и глоссы в словарь
+        pairs.append((key, value))   # складываем соотнесенные морфемы и глоссы в словарь
 
       lemmas = []
       gram = []
 
-      for key, value in pair.items():
+      for key, value in pairs:
           if any('а' <= char <= 'я' or 'А' <= char <= 'Я' for char in value):
               #lemmas[key] = value   # если в глоссах слово на кириллице, значит оно само и соответствующая нивхская часть - леммы
               lemmas.extend([key, value])                   # нивхская лемма должна записываться в 'lemma', русская - идти на вход русскому морфологическому анализатору, чтобы определить чр
