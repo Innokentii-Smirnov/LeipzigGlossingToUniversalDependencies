@@ -11,6 +11,7 @@ from .attribution_remover import AttributionRemover
 from .token_filter import TokenFilter
 from .auxiliary import is_empty_or_comment, format_line_number, construct_words
 WARNING_PREFIX = '# WARNING: '
+from ..normalisation.translation import normalise_translation
 
 def read_sentence_from_stream(stream: TextIOBase) -> GlossedSentence | None:
     """Reads the first glossed sentence from a text stream
@@ -78,7 +79,7 @@ def read_sentence_from_stream(stream: TextIOBase) -> GlossedSentence | None:
                     case "=":
                         sent_id = format_line_number(line_number)
                         text = " ".join(sentence_tokens)
-                        text_ru = line_body.strip()
+                        text_ru = normalise_translation(line_body)
                         MISC = ""
                         raw_sentence = RawSentence(sent_id, text, text_ru, MISC, has_formatting_issue, glossed_text.getvalue())
                         return GlossedSentence(raw_sentence, sentence_words)
