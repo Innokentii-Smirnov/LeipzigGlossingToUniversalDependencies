@@ -1,6 +1,6 @@
 import re
 
-def lemmas_gram(segmentation: str, gloss: str) -> tuple[list[str], list[str]]:
+def lemmas_gram(segmentation: str, gloss: str) -> tuple[list[str], list[list[str]]]:
 
     # Функция принимает на вход нивхскую словоформу и соответствующую ей глоссу
     # и возвращает две леммы (нивхскую и русскую) и список грамматических признаков,
@@ -32,7 +32,7 @@ def lemmas_gram(segmentation: str, gloss: str) -> tuple[list[str], list[str]]:
               #lemmas[key] = value   # если в глоссах слово на кириллице, значит оно само и соответствующая нивхская часть - леммы
               lemmas.extend([key, value])                   # нивхская лемма должна записываться в 'lemma', русская - идти на вход русскому морфологическому анализатору, чтобы определить чр
           else:
-              gram.extend(re.split(r'[.:]', value))   # все из глосс, что не леммы, мы собираем в общий список, который потом отправится в функцию get_feats() на переработку в формат ConLLU
+              gram.append(re.split(r'[.:]', value))   # все из глосс, что не леммы, мы собираем в общий список, который потом отправится в функцию get_feats() на переработку в формат ConLLU
 
       if lemmas:
         if any('a' <= char <= 'z' or 'A' <= char <= 'Z' for char in lemmas[1]):
@@ -41,7 +41,7 @@ def lemmas_gram(segmentation: str, gloss: str) -> tuple[list[str], list[str]]:
           #print(temp_list)
           for x in temp_list:
             if not any('а' <= char <= 'я' or 'А' <= char <= 'Я' for char in x):
-              gram.append(x)
+              gram.append([x])
               #print(x)
               lemmas[1] = lemmas[1].replace(x, "")
         lemmas[1] = lemmas[1].strip(".")
@@ -50,4 +50,4 @@ def lemmas_gram(segmentation: str, gloss: str) -> tuple[list[str], list[str]]:
 
       return lemmas, gram
     else:
-      return ["NaN", "NaN"], ["NaN", "NaN"]
+      return ["NaN", "NaN"], [["NaN"], ["NaN"]]

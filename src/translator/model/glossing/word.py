@@ -6,9 +6,16 @@ from ...part_of_speech import define_pos_tag
 from ...conversion.properties import get_feats
 from ... import EMPTY_FIELD_MARKER, MORPHOSYNTACTIC_PROPERTY_SEPARATOR
 from ...atr_val import prefixes as language_has_prefixes
+from itertools import chain
 from warnings import warn
 from logging import getLogger
 logger = getLogger(__name__)
+
+def join_feats(feat_array: list[str]) -> str:
+  if len(feat_array) > 0:
+    return MORPHOSYNTACTIC_PROPERTY_SEPARATOR.join(feat_array)
+  else:
+    return EMPTY_FIELD_MARKER
 
 @dataclass(order=True, frozen=True)
 class GlossedWord:
@@ -42,21 +49,26 @@ class GlossedWord:
             gram1 = []
         lemma = lem1[0] if len(lem1) > 0 else 'None'
         upos_tag = define_pos_tag(lem1[1]) if len(lem1) > 0 else ["None"]
-        feats, upos = get_feats(gram1, upos_tag)
         translation = lem1[1] if len(lem1) > 0 else 'None'
         if not language_has_prefixes and self.has_proclitic:
             clitic_form, segmented_word_form = segmentation.split("-", 1)
+            clitic_gram = gram1[0]
+            word_gram = list(chain.from_iterable(gram1[1:]))
             clitic_lemma = clitic_form
             clitic_upos = "PART"
-            clitic_feats = "Clitic=Yes"
+            clitic_feat_array, _ = get_feats(clitic_gram, [clitic_upos])
+            clitic_feat_array.append("Clitic=Yes")
+            clitic_feat_string = join_feats(clitic_feat_array)
             clitic_translation = gloss.split("-")[0]
-            clitic = UDWord(str(word_id), clitic_form, clitic_lemma, clitic_upos, clitic_feats, clitic_translation)
+            clitic = UDWord(str(word_id), clitic_form, clitic_lemma, clitic_upos, clitic_feat_string, clitic_translation)
             UD_words.append(clitic)
             word_id += 1
             word_form = preprocess_token(segmented_word_form)
         else:
             word_form = preprocess_token(segmentation)
-        feats_string = MORPHOSYNTACTIC_PROPERTY_SEPARATOR.join(feats) if len(feats) > 0 else EMPTY_FIELD_MARKER
-        word = UDWord(str(word_id), word_form, lemma, upos, feats_string, translation)
+            word_gram = list(chain.from_iterable(gram1))
+        word_feat_array, upos = get_feats(word_gram, upos_tag)
+        word_feat_string = join_feats(word_feat_array)
+        word = UDWord(str(word_id), word_form, lemma, upos, word_feat_string, translation)
         UD_words.append(word)
         return UD_words
