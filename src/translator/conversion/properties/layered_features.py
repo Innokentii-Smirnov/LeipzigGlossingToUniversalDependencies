@@ -1,6 +1,7 @@
 from .auxiliary import split_feat_val, split_feat_vals
 
 POSSESSOR_ATTRIBUTE_MARKER = 'psor'
+LAYER_FEATURE_NAME = 'Layer'
 
 def contains_a_value_for(bundle: list[str], feature: str) -> bool:
   """Determine whether a given bundle of Feature=Value strings
@@ -15,21 +16,35 @@ def contains_a_value_for(bundle: list[str], feature: str) -> bool:
       return True
   return False
 
-def prev_contains_a_value_for(bundles: list[list[str]], position: int, feature: str) -> bool:
-  """For the specified position in the list, determine whether the previous morphosyntactic
-  property bundle in the provided list of Feature=Value string bundles
-  contains a value for the specified Universal Dependencies morphological feature.
+def get_value_for(bundle: list[str], feature: str) -> str | None:
+  """Return a value for the specified Universal Dependencies morphological feature
+  from the given given bundle of Feature=Value strings.
+
+  :param bundle: A bundle of Feature=Value string.
+  :param feature: A Universal Dependencies morphological feature, such as Person.
+  :return: A value if the bundle contains the specified feature, None otherwise.
+  """
+  for feat, val in split_feat_vals(bundle):
+    if feat == feature:
+      return val
+  return None
+
+def exists_and_contains_a_value_for(bundles: list[list[str]], position: int, feature: str) -> bool:
+  """For the specified position, determine whether the position
+  is for valid the provided list of Feature=Value string bundles
+  and the bundle in this position contains a value
+  for the specified Universal Dependencies morphological feature.
 
   :param bundles: A list of Feature=Value string bundles.
-  :param position: The index of the element for which the previous element should be considered.
+  :param position: The index of the element which should be considered.
   :param feature: A Universal Dependencies morphological feature, such as Person.
-  :return: True if the previous element is well-defined (0 <= position <= len(feats)) and contains a value for the
-  specified feature; False otherwise.
+  :return: True if the position is well-defined (0 <= position < len(feats))
+  and the bundle in this position contains a value
+  for the specified feature; False otherwise.
   """
-  prev_index = position - 1
-  if prev_index >= 0 and prev_index < len(bundles):
-    prev_bundle = bundles[prev_index]
-    return contains_a_value_for(prev_bundle, feature)
+  if position >= 0 and position < len(bundles):
+    bundle = bundles[position]
+    return contains_a_value_for(bundle, feature)
   else:
     return False
 
@@ -44,9 +59,18 @@ def get_layer(part_of_speech: str, feat: str, bundles: list[list[str]], position
   :param position: The index of the morphosyntactic property for which the layer should be determined, if needed.
   :return: A layer if the feature is layered and the layer should be marked, None otherwise.
   """
-  if part_of_speech == 'NOUN':
-    if feat == 'Person' or feat == 'Number' and prev_contains_a_value_for(bundles, position, 'Person'):
-      return POSSESSOR_ATTRIBUTE_MARKER
+  if feat == 'Person' or feat == 'Number':
+    match part_of_speech:
+      case 'NOUN':
+        if exists_and_contains_a_value_for(bundles, position - 1, 'Person'):
+          return POSSESSOR_ATTRIBUTE_MARKER
+      case 'VERB':
+        for search_position in range(position, position + 3):
+          if exists_and_contains_a_value_for(bundles, search_position, LAYER_FEATURE_NAME):
+            bundle = bundles[search_position]
+            return get_value_for(bundle, LAYER_FEATURE_NAME)
+      case _:
+        pass
   return None
 
 def format_layered_feature(feat: str, layer: str, val: str) -> str:
@@ -110,5 +134,7 @@ def format_bundles(bundles: list[list[str]], part_of_speech: str) -> list[list[s
   new_bundles = list[list[str]]()
   for position, bundle in enumerate(bundles):
     new_bundle = format_bundle(bundle, part_of_speech, bundles, position)
-    new_bundles.append(new_bundle)
+    filtered_bundle = list(filter(lambda feat_val: split_feat_val(feat_val)[0] != LAYER_FEATURE_NAME, new_bundle))
+    if len(filtered_bundle) > 0:
+      new_bundles.append(new_bundle)
   return new_bundles
