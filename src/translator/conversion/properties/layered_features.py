@@ -62,7 +62,7 @@ def get_layer(part_of_speech: str, feat: str, bundles: list[list[str]], position
   if feat == 'Person' or feat == 'Number':
     match part_of_speech:
       case 'NOUN':
-        if exists_and_contains_a_value_for(bundles, position - 1, 'Person'):
+        if feat == 'Person' or exists_and_contains_a_value_for(bundles, position - 1, 'Person'):
           return POSSESSOR_ATTRIBUTE_MARKER
       case 'VERB':
         for search_position in range(position, position + 3):
