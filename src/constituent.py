@@ -21,3 +21,11 @@ class Constituent(Unit):
   @form.setter
   def form(self, value: str) -> None:
     self.dict['text'] = value
+
+  @property
+  def token_form(self) -> str:
+    return self.dict['tokens'][0][0]
+
+  @token_form.setter
+  def token_form(self, value: str) -> None:
+    self.dict['tokens'][0][0] = value
