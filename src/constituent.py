@@ -29,3 +29,11 @@ class Constituent(Unit):
   @token_form.setter
   def token_form(self, value: str) -> None:
     self.dict['tokens'][0][0] = value
+
+  @property
+  def index(self) -> int:
+    return int(self.dict['id'])
+
+  @index.setter
+  def index(self, value: int) -> None:
+    self.dict['id'] = str(value)

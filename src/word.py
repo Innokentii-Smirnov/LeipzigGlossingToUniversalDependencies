@@ -21,3 +21,11 @@ class Token(Unit):
   @form.setter
   def form(self, value: str) -> None:
     self.dict['token'] = value
+
+  @property
+  def index(self) -> int:
+    return int(self.dict['itoken'])
+
+  @index.setter
+  def index(self, value: int) -> None:
+    self.dict['itoken'] = str(value)
