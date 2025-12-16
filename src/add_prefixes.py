@@ -19,5 +19,6 @@ for file_name in os.listdir(input_directory):
       for sentence in text:
         process_elements(sentence['tokens'], Token)
         process_elements(sentence['constituents'], Constituent)
+        sentence['length'] = len(sentence['tokens'])
     with open(path.join(output_directory, file_name), 'w', encoding='utf-8') as fout:
       json.dump(text, fout, ensure_ascii=False, indent=6)
