@@ -1,13 +1,13 @@
 from translator.conversion.properties.auxiliary import split_feat_val
 from translator.conversion.properties.layered_features import format_layered_feature
-from type_definition import Token
+from unit import Unit
 
 LAYERED_FEATURES = {'Person', 'Number'}
 CLITIC_LAYER = 'obj'
 VERB_LAYER = 'subj'
 
-def format_verb_feats(verb: Token) -> list[str]:
-  verb_feats = verb['tagsets'][0]
+def format_verb_feats(verb: Unit) -> list[str]:
+  verb_feats = verb.tag
   new_verb_feats = list[str]()
   for feat_val in verb_feats:
     feat, val = split_feat_val(feat_val)
@@ -18,8 +18,8 @@ def format_verb_feats(verb: Token) -> list[str]:
       new_verb_feats.append(feat_val)
   return new_verb_feats
 
-def get_formatted_clitic_agr_feats(clitic: Token) -> list[str]:
-  clitic_feats = clitic['tagsets'][0]
+def get_formatted_clitic_agr_feats(clitic: Unit) -> list[str]:
+  clitic_feats = clitic.tag
   clitic_agr_feats = list[str]()
   for feat_val in clitic_feats:
     feat, val = split_feat_val(feat_val)

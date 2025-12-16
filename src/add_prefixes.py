@@ -2,6 +2,7 @@ from os import path
 import os
 import json
 from merging import merge_clitic_and_verb, format_verb_object
+from word import Token
 
 input_directory = 'output'
 assert path.exists(input_directory)
@@ -18,14 +19,12 @@ for file_name in os.listdir(input_directory):
         tokens = sentence['tokens']
         i = 0
         while i < len(tokens):
-          token = tokens[i]
-          token_feats = token['tagsets'][0]
-          if 'VERB' in token_feats:
+          token = Token(tokens[i])
+          if 'VERB' in token.tag:
             format_verb_object(token)
           elif i + 1 < len(tokens):
-            next_token = tokens[i + 1]
-            next_token_feats = next_token['tagsets'][0]
-            if 'Clitic=Yes' in token_feats and 'VERB' in next_token_feats:
+            next_token = Token(tokens[i + 1])
+            if 'Clitic=Yes' in token.tag and 'VERB' in next_token.tag:
               del tokens[i]
               merge_clitic_and_verb(token, next_token)
           i += 1
