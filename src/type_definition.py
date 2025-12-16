@@ -1,3 +1,10 @@
-# The fields of a dictionary representing a token are in fact of different types.
-# The specified field value type is only valid for the field "tagsets".
-type UnitDict = dict[str, list[list[str]] | str]
+from typing import TypedDict
+
+class TokenDict(TypedDict):
+  tagsets: list[list[str]]
+  token: str
+
+class ConstituentDict(TypedDict):
+  tags: list[str]
+  text: str
+  tokens: list[list[str]]
